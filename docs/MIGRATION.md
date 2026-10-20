@@ -32,6 +32,9 @@ recorded here rather than carried over as a filtered history.
 | `.github/workflows/pr-test-deepep-npu.yml` | `.github/workflows/pr-test-deepep-npu.yml` | Primary DeepEP PR test workflow (paths adapted). |
 | `.github/workflows/internode.yml` | `.github/workflows/internode.yml` | Reusable A2 multi-node workflow (kept for manual validation/future restoration). |
 | `.github/workflows/release_deep_ep_wheel.yml` | `.github/workflows/release_deep_ep_wheel.yml` | DeepEP wheel release workflow. |
+| `.github/workflows/build_and_release.yml` (DeepEP job) | `.github/workflows/build_and_release.yml` | DeepEP-only A2/A3/A5 wheel build and release (matrix trimmed to DeepEP). |
+| `.github/workflows/daily-build-test.yml` | `.github/workflows/daily-build-test.yml` | Daily DeepEP enumerate tests; the whole upstream workflow is DeepEP-specific. |
+| `.github/workflows/push_build_cache.yml` | `.github/workflows/push_build_cache.yml` | DeepEP build-cache warmer; cache key aligned with the PR workflow. |
 | `.github/workflows/scripts/wheel/` | `.github/workflows/scripts/wheel/` | Wheel-variant tooling used by the release workflow. |
 | `LICENSE` | `LICENSE` | Repository license (MIT, sgl-project). |
 | `.pre-commit-config.yaml` | `.pre-commit-config.yaml` | Formatting/lint hooks. |
@@ -50,7 +53,7 @@ recorded here rather than carried over as a filtered history.
 | `python/sgl_kernel_npu/`, `python/attentions/` | SGLang kernel and attention Python packages. |
 | `tests/csrc/`, `tests/python/sgl_kernel_npu/` | SGLang kernel tests. |
 | `benchmark/`, `docs/developer_guide/`, `docs/README.md` | Monorepo-level material. |
-| `.github/workflows/pr-test-kernels.yml`, `build_and_release.yml`, `daily-build-test.yml`, `push_build_cache.yml` | Mixed workflows that build/test SGLang kernels as well as DeepEP. The DeepEP-specific jobs are represented by the migrated workflows. |
+| `.github/workflows/pr-test-kernels.yml` | SGLang kernel-only workflow; the DeepEP exclusion it contains is not DeepEP CI. |
 
 ## Standalone changes
 
@@ -82,7 +85,9 @@ The source repository was left untouched. To complete the split there:
 1. Delete `csrc/deepep/`, `csrc/deepep_cmake_build.sh`, `python/deep_ep/`,
    `tests/python/deepep/`, the DeepEP test scripts under `scripts/`, and
    `.github/workflows/pr-test-deepep-npu.yml`, `internode.yml`,
-   `release_deep_ep_wheel.yml`, `.github/workflows/scripts/wheel/`.
+   `release_deep_ep_wheel.yml`, `daily-build-test.yml`, `push_build_cache.yml`,
+   `.github/workflows/scripts/wheel/`. In the mixed `build_and_release.yml`,
+   delete only the DeepEP build steps.
 2. In `CMakeLists.txt`, remove `BUILD_DEEPEP_MODULE` and
    `add_subdirectory(csrc/deepep)`.
 3. In `csrc/CMakeLists.txt`, drop the two `csrc/deepep/ops/op_kernel` include
@@ -93,8 +98,6 @@ The source repository was left untouched. To complete the split there:
    `configure_soc_version`.
 5. Remove DeepEP entries from `.gitignore` and DeepEP references from `README.md`
    and `docs/`.
-6. Remove the `push_build_cache.yml` / `daily-build-test.yml` DeepEP cache and
-   test steps.
 
 ## Verification performed
 
@@ -110,7 +113,7 @@ no NPU device present (`npu-smi` unavailable), so device execution was not run.
 | `import deep_ep_cpp` smoke test | Passed; `get_low_latency_rdma_size_hint` callable. |
 | Source parity vs upstream | All 381 DeepEP `csrc/`, `python/`, `tests/` and `cmake/` files byte-identical; only wrapper/docs paths changed. |
 | Test migration | All 25 files from `tests/python/deepep/` present under `tests/`. |
-| Workflow YAML syntax | All three migrated workflows parse successfully. |
+| Workflow YAML syntax | All six migrated workflows parse successfully. |
 
 Notes:
 

@@ -332,6 +332,8 @@ bash tests/run_test_internode.sh
 ### CI coverage and A2 multi-node status
 
 - The [PR workflow](.github/workflows/pr-test-deepep-npu.yml) validates A2/A3 on CANN 9.0.0 and 9.1.0, and A5 on 9.1.0.
+- The [daily workflow](.github/workflows/daily-build-test.yml) runs the enumerate test matrices for A2/A3 on CANN 9.0.0 and 9.1.0, then reuses the PR test suite.
+- [build_and_release.yml](.github/workflows/build_and_release.yml) builds A2/A3/A5 wheels for release, and [push_build_cache.yml](.github/workflows/push_build_cache.yml) warms the build cache used by the PR workflow.
 - CANN 8.5.0 runners were retired and its test matrices removed in August 2026. Compatibility with 8.5.0 is no longer verified.
 - **A2 multi-node CI has been disabled since September 2, 2026**. The node pool shrank from four to two nodes, leaving insufficient capacity for CI. The dedicated `a2-internode-test.yml` and daily `multi-node-internode` job were removed.
 - `test_internode_a2.py`, `run_test_internode.sh`, the reusable `internode.yml`, and hierarchical/non-hierarchical communication and HCCL tuning instructions remain available for manual validation and future restoration. They do not imply active A2 multi-node CI coverage.
@@ -653,6 +655,8 @@ bash tests/run_test_internode.sh
 ### CI 覆盖范围与 A2 多机状态
 
 - [PR 工作流](.github/workflows/pr-test-deepep-npu.yml) 在 A2/A3 上验证 CANN 9.0.0、9.1.0，在 A5 上验证 9.1.0。
+- [每日工作流](.github/workflows/daily-build-test.yml) 在 A2/A3 上运行 CANN 9.0.0、9.1.0 的 enumerate 测试矩阵，并复用 PR 测试套件。
+- [build_and_release.yml](.github/workflows/build_and_release.yml) 负责构建 A2/A3/A5 的发布 wheel；[push_build_cache.yml](.github/workflows/push_build_cache.yml) 为 PR 工作流预热构建缓存。
 - CANN 8.5.0 runner 已下线，测试矩阵于 2026 年 8 月移除，不再验证 8.5.0 的兼容性。
 - **A2 多机 CI 自 2026-09-02 起停用**。节点池从 4 个缩减为 2 个，资源不足以支撑 CI，已删除独立的 `a2-internode-test.yml` 和每日流水线的 `multi-node-internode` job。
 - 保留 `test_internode_a2.py`、`run_test_internode.sh`、可复用的 `internode.yml`，以及分层/不分层通信、HCCL 调优说明，供手动验证及后续恢复使用；这些资料不代表 A2 多机仍有 CI 覆盖。
