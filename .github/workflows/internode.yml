@@ -2,7 +2,7 @@
 # This reusable workflow remains available for future restoration. Restore
 # capacity or optimize scheduling, validate connectivity/CANN and pass multi-node
 # tests before restoring dedicated/daily jobs. See
-# python/deep_ep/README.md#ci-coverage-and-a2-multi-node-status.
+# README.md#ci-coverage-and-a2-multi-node-status.
 name: 'internode (Ascend NPU)'
 
 on:
@@ -55,8 +55,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Install system dependencies
         run: |

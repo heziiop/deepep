@@ -413,6 +413,9 @@ function make_deepep_package()
 {
     (
         cd "$PROJECT_ROOT/python/deep_ep"
+        # Drop extensions built for a previous Python ABI so setup.py's
+        # deep_ep_cpp*.so glob cannot ship more than one module.
+        rm -f "$PROJECT_ROOT"/python/deep_ep/deep_ep/deep_ep_cpp*.so
         cp -v "$OUTPUT_DIR"/lib/* "$PROJECT_ROOT/python/deep_ep/deep_ep/"
         rm -rf build dist
         python3 setup.py clean --all

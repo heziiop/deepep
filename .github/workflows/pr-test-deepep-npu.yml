@@ -5,6 +5,8 @@ on:
     branches: [ main ]
     paths:
       - "build.sh"
+      - "CMakeLists.txt"
+      - ".clang-format"
       - "cmake/**"
       - "python/deep_ep/**"
       - "csrc/**"
@@ -47,6 +49,8 @@ jobs:
               - '!ops/**'
               - '!ops2/**'
               - build.sh
+              - CMakeLists.txt
+              - .clang-format
               - cmake/**
               - python/**
               - tests/**

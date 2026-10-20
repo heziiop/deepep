@@ -60,14 +60,15 @@ The resulting standalone repository tracks 409 files.
 | `LICENSE` | `LICENSE` | Repository license (MIT, sgl-project). |
 | `.pre-commit-config.yaml` | `.pre-commit-config.yaml` | Formatting/lint hooks. |
 | `build.sh` (DeepEP parts) | `build.sh` | Rewritten as a standalone, DeepEP-only build driver. |
-| `python/deep_ep/README.md` | `README.md` | Promoted to the repository README and adapted for standalone use. |
+| `python/deep_ep/README.md` | `README.md` | Full README promoted to the repository root; `python/deep_ep/README.md` keeps a short pointer stub. |
 
 ### Deliberately not migrated
 
 | Upstream path | Reason |
 |---|---|
-| `csrc/CMakeLists.txt` and all other `csrc/<kernel>/` directories | SGLang kernel library (`sgl_kernel_npu`), unrelated to DeepEP. |
+| All other `csrc/<kernel>/` directories (attentions, alloc_extend, lora, ...) | SGLang kernel library (`sgl_kernel_npu`), unrelated to DeepEP. The upstream `csrc/CMakeLists.txt` is not copied as-is; a DeepEP-only `csrc/CMakeLists.txt` is provided instead. |
 | `csrc/deepep_cmake_build.sh`, `csrc/deepep/build.sh` | Module-dispatch wrappers for the monorepo (`all`/`deepep` selection, dead pybind/UT branches). The standalone `build.sh` invokes the required steps directly. |
+| `csrc/deepep/README.md` | Empty (0-byte) upstream file; no content to migrate. |
 | `cmake/config_ascend.cmake` | Only needed to build AscendC kernels through the monorepo's top-level CMake project. The operator projects in `ops/` and `ops2/` use CANN's OPP CMake directly. |
 | `third_party/catlass`, `third_party/pto-isa` | Git submodules used by SGLang kernels. DeepEP's `ops/build.sh` fetches the Catlass version it needs (A3/A5) at build time. |
 | `include/`, `config.ini`, `contrib/torch_memory_saver/` | SGLang-kernel / memory-saver components. |
@@ -80,7 +81,6 @@ The resulting standalone repository tracks 409 files.
 | `docs/developer_guide/`, `docs/README.md` | Monorepo contribution/documentation workflow; the DeepEP build and test instructions live in `README.md` and `python/deep_ep/doc/`. |
 | `.opencode/` | Agent/tooling metadata; contains no DeepEP code or documentation. |
 | `config.ini` | Version file consumed by `python/sgl_kernel_npu/setup.py`, not by `deep_ep`. |
-| `.github/workflows/pr-test-kernels.yml` | SGLang kernel-only workflow; the DeepEP exclusion it contains is not DeepEP CI. |
 
 ## Standalone changes
 
@@ -104,6 +104,14 @@ Only build/packaging glue was changed; DeepEP source code is otherwise kept as-i
    templates use the new paths. Tests themselves are unchanged.
 6. **CI**: workflow paths, change-detection groups, cache keys and runner
    namespace names were updated for the standalone layout.
+7. **Build hygiene**: `cmake/config_git_last_commit.cmake` now runs `git` in
+   `${PROJECT_SOURCE_DIR}`; `build.sh` removes stale `deep_ep_cpp*.so` files
+   before packaging; the pre-commit `ruff` hook was dropped because it only
+   targeted the non-migrated `benchmark/`, `docs/` and `examples/` trees.
+8. **CMake flags**: the root project keeps the release flags needed by the
+   extension (`-O3`, visibility, stack protector, `-fPIC`). The monorepo-wide
+   warning/linker hardening flags from the old top-level project were not
+   carried over; they are not required by `deep_ep_cpp`.
 
 ## Removing DeepEP from `sgl-kernel-npu` (not applied here)
 
@@ -138,7 +146,7 @@ no NPU device present (`npu-smi` unavailable), so device execution was not run.
 | `bash build.sh -a deepep Ascend950` (A5 end-to-end) | Passed; wheel contains `ascend950` operator kernels. |
 | `import deep_ep` from the installed A3 wheel | Passed; `Buffer`, `Config`, `EventOverlap`, strategies load. |
 | `import deep_ep_cpp` smoke test | Passed; `get_low_latency_rdma_size_hint` callable. |
-| Source parity vs upstream | All 381 DeepEP `csrc/`, `python/`, `tests/` and `cmake/` files byte-identical; only wrapper/docs paths changed. |
+| Source parity vs upstream | 383 mapped DeepEP files present; 378 byte-identical, 5 differ only in path/build glue (`csrc/CMakeLists.txt`, `python/deep_ep/README.md`, `python/deep_ep/doc/A2_DEEPEP.md`, `tests/k8s_multi.yaml.jinja2`, `tests/run_ascend_testcase.sh`); 0 missing. |
 | Test migration | All 25 files from `tests/python/deepep/` present under `tests/`. |
 | Workflow YAML syntax | All seven migrated workflows parse successfully. |
 
