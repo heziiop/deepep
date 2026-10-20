@@ -9,6 +9,25 @@ upstream repository if desired.
 The new repository starts with a fresh initial commit; the upstream provenance is
 recorded here rather than carried over as a filtered history.
 
+## Audit method
+
+The audit covered all 1,178 tracked files in the upstream repository:
+
+1. Enumerated every file outside the already-migrated DeepEP paths and searched
+   for DeepEP names/symbols (`deep_ep`, `deepep`, `fused_deep_moe`,
+   `moe_distribute*`, `dispatch_ffn_combine`, `dispatch_layout`, `notify_dispatch`,
+   `cam_moe`, `low_latency_*`, `num_recv_tokens*`, `expert_scales`, ...).
+2. Checked the include graph of every migrated C++ source to confirm it does not
+   depend on headers outside the DeepEP tree.
+3. Built A2/A3/A5 from the new repository without any non-DeepEP `csrc/` sources,
+   which proves there is no hidden build-time dependency.
+4. Checked for empty placeholder files, hidden config files (`.clang-format`),
+   repo-level CI (`lint.yml`) and root configuration.
+5. Compared every migrated file against upstream (byte-for-byte except the
+   intentional path/build-glue changes listed below).
+
+The resulting standalone repository tracks 409 files.
+
 ## Ownership audit
 
 ### Migrated (DeepEP-owned)
@@ -35,7 +54,9 @@ recorded here rather than carried over as a filtered history.
 | `.github/workflows/build_and_release.yml` (DeepEP job) | `.github/workflows/build_and_release.yml` | DeepEP-only A2/A3/A5 wheel build and release (matrix trimmed to DeepEP). |
 | `.github/workflows/daily-build-test.yml` | `.github/workflows/daily-build-test.yml` | Daily DeepEP enumerate tests; the whole upstream workflow is DeepEP-specific. |
 | `.github/workflows/push_build_cache.yml` | `.github/workflows/push_build_cache.yml` | DeepEP build-cache warmer; cache key aligned with the PR workflow. |
+| `.github/workflows/lint.yml` | `.github/workflows/lint.yml` | Repo-wide pre-commit lint; the SGLang-kernel-only unit-test step was removed and a Python syntax check added. |
 | `.github/workflows/scripts/wheel/` | `.github/workflows/scripts/wheel/` | Wheel-variant tooling used by the release workflow. |
+| `csrc/.clang-format` | `.clang-format` | C++ formatting config consumed by the pre-commit clang-format hook; moved to the repo root so it also covers `ops/` and `ops2/`. |
 | `LICENSE` | `LICENSE` | Repository license (MIT, sgl-project). |
 | `.pre-commit-config.yaml` | `.pre-commit-config.yaml` | Formatting/lint hooks. |
 | `build.sh` (DeepEP parts) | `build.sh` | Rewritten as a standalone, DeepEP-only build driver. |
@@ -51,8 +72,14 @@ recorded here rather than carried over as a filtered history.
 | `third_party/catlass`, `third_party/pto-isa` | Git submodules used by SGLang kernels. DeepEP's `ops/build.sh` fetches the Catlass version it needs (A3/A5) at build time. |
 | `include/`, `config.ini`, `contrib/torch_memory_saver/` | SGLang-kernel / memory-saver components. |
 | `python/sgl_kernel_npu/`, `python/attentions/` | SGLang kernel and attention Python packages. |
-| `tests/csrc/`, `tests/python/sgl_kernel_npu/` | SGLang kernel tests. |
-| `benchmark/`, `docs/developer_guide/`, `docs/README.md` | Monorepo-level material. |
+| `tests/csrc/`, `tests/python/sgl_kernel_npu/` | SGLang kernel tests. `test_build_targets.py` exercises the monorepo `build.sh` targets (including `deepep`), not DeepEP runtime code. |
+| `.github/workflows/pr-test-kernels.yml`, `daily-test-kernels.yml` | SGLang kernel CI (`pr-test-kernels.yml` only mentions `csrc/deepep/**` in a path exclusion). |
+| `scripts/prepare_kernel_tests.sh`, `run_kernel_tests.sh`, `scripts/sparsity_driven_kv_offload/` | SGLang kernel / KV-offload test tooling. |
+| `benchmark/bench_deepep.py` | Zero-byte placeholder since the initial upstream commit, not referenced by any build, test or doc. An empty file adds no value to the standalone repo. |
+| `benchmark/sparsity_driven_kv_offload/` | SGLang kernel benchmarks. |
+| `docs/developer_guide/`, `docs/README.md` | Monorepo contribution/documentation workflow; the DeepEP build and test instructions live in `README.md` and `python/deep_ep/doc/`. |
+| `.opencode/` | Agent/tooling metadata; contains no DeepEP code or documentation. |
+| `config.ini` | Version file consumed by `python/sgl_kernel_npu/setup.py`, not by `deep_ep`. |
 | `.github/workflows/pr-test-kernels.yml` | SGLang kernel-only workflow; the DeepEP exclusion it contains is not DeepEP CI. |
 
 ## Standalone changes
@@ -113,7 +140,7 @@ no NPU device present (`npu-smi` unavailable), so device execution was not run.
 | `import deep_ep_cpp` smoke test | Passed; `get_low_latency_rdma_size_hint` callable. |
 | Source parity vs upstream | All 381 DeepEP `csrc/`, `python/`, `tests/` and `cmake/` files byte-identical; only wrapper/docs paths changed. |
 | Test migration | All 25 files from `tests/python/deepep/` present under `tests/`. |
-| Workflow YAML syntax | All six migrated workflows parse successfully. |
+| Workflow YAML syntax | All seven migrated workflows parse successfully. |
 
 Notes:
 
