@@ -34,13 +34,12 @@ contains only the DeepEP component, its AscendC operator packages, and its tests
 | Path | Description |
 |------|-------------|
 | `build.sh` | Standalone build driver; produces `output/deep_ep*.whl`. |
-| `csrc/` | Host-side C++/pybind11 extension (`deep_ep_cpp`). |
-| `ops/` | AscendC operator project for A3/A5. |
-| `ops2/` | AscendC operator project for A2. |
+| `csrc/runtime/` | Host-side C++/pybind11 extension (`deep_ep_cpp`). |
+| `csrc/ops/` | AscendC operator project for A3/A5. |
+| `csrc/ops2/` | AscendC operator project for A2. |
 | `python/deep_ep/` | Python package and wheel definition (`setup.py`). |
 | `tests/` | DeepEP Python test suite and multi-node test helpers. |
 | `scripts/` | Build scaffolding, CI preparation, and test matrix scripts. |
-| `cmake/` | CMake helpers used by the host extension build. |
 | `.github/` | CI workflows: PR/daily tests, lint, build cache, release. |
 | `docs/` | Extraction audit and migration notes. |
 
@@ -89,7 +88,7 @@ The following explicit commands remain available when automatic detection is not
 > SGLang kernels or other unrelated modules.
 >
 > **Dependencies**: building the AscendC operator package requires `msopgen`
-> from CANN. For A3/A5, `ops/build.sh` also fetches the required Catlass revision
+> from CANN. For A3/A5, `csrc/ops/build.sh` also fetches the required Catlass revision
 > from `gitcode.com` on the first build.
 >
 > **Tip**: Add the `-d` flag to enable debug logging (e.g., `bash build.sh -a deepep -d`).
@@ -381,13 +380,12 @@ DeepEP-Ascend 采用**策略式架构**，通过环境变量灵活选择通信�
 | 路径 | 说明 |
 |------|------|
 | `build.sh` | 独立构建入口，产出 `output/deep_ep*.whl`。 |
-| `csrc/` | Host 侧 C++/pybind11 扩展（`deep_ep_cpp`）。 |
-| `ops/` | A3/A5 的 AscendC 算子工程。 |
-| `ops2/` | A2 的 AscendC 算子工程。 |
+| `csrc/runtime/` | Host 侧 C++/pybind11 扩展（`deep_ep_cpp`）。 |
+| `csrc/ops/` | A3/A5 的 AscendC 算子工程。 |
+| `csrc/ops2/` | A2 的 AscendC 算子工程。 |
 | `python/deep_ep/` | Python 包与 wheel 定义（`setup.py`）。 |
 | `tests/` | DeepEP Python 测试用例及多机测试辅助脚本。 |
 | `scripts/` | 构建脚手架、CI 准备与测试矩阵脚本。 |
-| `cmake/` | Host 扩展构建使用的 CMake 辅助模块。 |
 
 ### 软硬件配套说明
 
@@ -433,7 +431,7 @@ bash build.sh -a deepep
 > 或其他无关模块。
 >
 > **依赖**：构建 AscendC 算子包需要 CANN 提供的 `msopgen`。A3/A5 首次构建时，
-> `ops/build.sh` 还会从 `gitcode.com` 拉取所需的 Catlass 版本。
+> `csrc/ops/build.sh` 还会从 `gitcode.com` 拉取所需的 Catlass 版本。
 >
 > **提示**：可加 `-d` 参数启用 DEBUG 日志（如 `bash build.sh -a deepep -d`）。
 

@@ -37,9 +37,9 @@ Omitting SOC_VERSION auto-detects it with npu-smi; hosts without a device fall
 back to Ascend910_9382 (A3).
 
 TARGET:
-    deepep         (default) Build deep_ep and select ops/ (A3/A5) or ops2/ (A2)
+    deepep         (default) Build deep_ep and select csrc/ops/ (A3/A5) or csrc/ops2/ (A2)
                    from the detected SoC.
-    deepep2        Build deep_ep with ops2/ for A2 (compatible alias).
+    deepep2        Build deep_ep with csrc/ops2/ for A2 (compatible alias).
 
 SOC_VERSION:
     Ascend910B1         A2 chip. Valid for deepep/deepep2.
@@ -333,18 +333,18 @@ function ensure_wheel_package()
 }
 
 # Generate the OPP project scaffolding (CMakePresets, optional cmake helpers)
-# required by ops/ or ops2/ before the operator package can be built.
+# required by csrc/ops/ or csrc/ops2/ before the operator package can be built.
 function prepare_ops_project()
 {
     local proj_dir=""
     if [[ "$DEEPEP_VARIANT" == "deepep2" ]]; then
-        proj_dir="ops2"
+        proj_dir="csrc/ops2"
     else
-        proj_dir="ops"
+        proj_dir="csrc/ops"
     fi
 
     echo "Preparing ${proj_dir} project for ${SOC_VERSION}"
-    bash "$PROJECT_ROOT/scripts/compile_ascend_proj.sh" "$SOC_VERSION" "$DEEPEP_VARIANT"
+    bash "$PROJECT_ROOT/scripts/prepare_opp_scaffold.sh" "$SOC_VERSION" "$DEEPEP_VARIANT"
 }
 
 # Build and install the host-side pybind11 extension (deep_ep_cpp).
@@ -370,7 +370,7 @@ function build_host_extension()
 
     cmake "${cmake_args[@]}" \
         -B "$BUILD_DIR" \
-        -S "$PROJECT_ROOT"
+        -S "$PROJECT_ROOT/csrc/runtime"
     cmake --build "$BUILD_DIR" --target install -j "${BUILD_JOBS:-16}"
 }
 
@@ -382,9 +382,9 @@ function build_device_ops()
     local custom_opp_file=""
 
     if [[ "$DEEPEP_VARIANT" == "deepep2" ]]; then
-        kernel_dir="${PROJECT_ROOT}/ops2"
+        kernel_dir="${PROJECT_ROOT}/csrc/ops2"
     else
-        kernel_dir="${PROJECT_ROOT}/ops"
+        kernel_dir="${PROJECT_ROOT}/csrc/ops"
     fi
 
     (

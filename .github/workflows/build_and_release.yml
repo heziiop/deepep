@@ -11,11 +11,7 @@ on:
     paths:
       - '.github/workflows/build_and_release.yml'
       - 'build.sh'
-      - 'CMakeLists.txt'
-      - 'cmake/**'
       - 'csrc/**'
-      - 'ops/**'
-      - 'ops2/**'
       - 'python/**'
       - 'scripts/**'
 

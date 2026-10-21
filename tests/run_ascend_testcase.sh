@@ -78,11 +78,11 @@ sleep 3
 
 find ./output -type d -exec chmod 755 {} \; 2>/dev/null || true
 find ./build -type d -exec chmod 755 {} \; 2>/dev/null || true
-find ./ops2/build_out -type d -exec chmod 755 {} \; 2>/dev/null || true
+find ./csrc/ops2/build_out -type d -exec chmod 755 {} \; 2>/dev/null || true
 
 rm -rf ./output 2>/dev/null || true
 rm -rf ./build 2>/dev/null || true
-rm -rf ./ops2/build_out 2>/dev/null || true
+rm -rf ./csrc/ops2/build_out 2>/dev/null || true
 
 find . -type d -name "CMakeFiles" -exec chmod -R 755 {} \; 2>/dev/null || true
 find . -type d -name "CMakeFiles" -exec rm -rf {} + 2>/dev/null || true
@@ -97,8 +97,8 @@ while [ $attempt -lt $max_retries ]; do
     cd "$LOCAL_BUILD_DIR"
     find ./output -type d -exec chmod 755 {} \; 2>/dev/null || true
     find ./build -type d -exec chmod 755 {} \; 2>/dev/null || true
-    find ./ops2/build_out -type d -exec chmod 755 {} \; 2>/dev/null || true
-    rm -rf ./output ./build ./ops2/build_out 2>/dev/null || true
+    find ./csrc/ops2/build_out -type d -exec chmod 755 {} \; 2>/dev/null || true
+    rm -rf ./output ./build ./csrc/ops2/build_out 2>/dev/null || true
     sleep 1
 
     bash build.sh -a deepep2
@@ -110,8 +110,8 @@ while [ $attempt -lt $max_retries ]; do
         echo "Build failed. Cleaning up local directory..."
         find ./output -type d -exec chmod 755 {} \; 2>/dev/null || true
         find ./build -type d -exec chmod 755 {} \; 2>/dev/null || true
-        find ./ops2/build_out -type d -exec chmod 755 {} \; 2>/dev/null || true
-        rm -rf ./output ./build ./ops2/build_out 2>/dev/null || true
+        find ./csrc/ops2/build_out -type d -exec chmod 755 {} \; 2>/dev/null || true
+        rm -rf ./output ./build ./csrc/ops2/build_out 2>/dev/null || true
         echo "Waiting 10 seconds for file system sync..."
         sleep 10
         attempt=$((attempt+1))

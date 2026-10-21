@@ -34,15 +34,15 @@ The resulting standalone repository tracks 409 files.
 
 | Upstream path | New path | Rationale |
 |---|---|---|
-| `csrc/deepep/*.cpp`, `*.hpp` | `csrc/` | Host-side DeepEP buffer/communication implementation and pybind11 entry point (`deep_ep_cpp`). |
-| `csrc/deepep/profiling/` | `csrc/profiling/` | Host-side profiling runtime and the `fused_deep_moe` A5 adapter. |
-| `csrc/deepep/ops/` | `ops/` | AscendC operator project for A3/A5 (normal/low-latency dispatch/combine, fused MoE). |
-| `csrc/deepep/ops2/` | `ops2/` | AscendC operator project for A2. |
-| `csrc/deepep/AddCustom.json` | `ops/AddCustom.json` | `msopgen` template used to scaffold both operator projects. |
+| `csrc/deepep/*.cpp`, `*.hpp` | `csrc/runtime/` | Host-side DeepEP buffer/communication implementation and pybind11 entry point (`deep_ep_cpp`). |
+| `csrc/deepep/profiling/` | `csrc/runtime/profiling/` | Host-side profiling runtime and the `fused_deep_moe` A5 adapter. |
+| `csrc/deepep/ops/` | `csrc/ops/` | AscendC operator project for A3/A5 (normal/low-latency dispatch/combine, fused MoE). |
+| `csrc/deepep/ops2/` | `csrc/ops2/` | AscendC operator project for A2. |
+| `csrc/deepep/AddCustom.json` | `scripts/templates/opp_scaffold.json` | `msopgen` template used to scaffold both operator projects. |
 | `python/deep_ep/` | `python/deep_ep/` | Python package (`deep_ep`), strategies, API docs and `setup.py`. |
 | `tests/python/deepep/` | `tests/` | DeepEP test suite, multi-node/k8s helpers and test runners. |
-| `cmake/config_envs.cmake` | `cmake/config_envs.cmake` | Resolves torch/torch_npu/pybind11 paths and the C++ ABI for the host extension. |
-| `cmake/config_git_last_commit.cmake` | `cmake/config_git_last_commit.cmake` | Supplies `GIT_LAST_COMMIT` used by the extension. |
+| `cmake/config_envs.cmake` | `csrc/runtime/cmake/config_envs.cmake` | Resolves torch/torch_npu/pybind11 paths and the C++ ABI for the host extension. |
+| `cmake/config_git_last_commit.cmake` | `csrc/runtime/cmake/config_git_last_commit.cmake` | Supplies `GIT_LAST_COMMIT` used by the extension. |
 | `scripts/enumerate_test_intranode.sh` | `scripts/enumerate_test_intranode.sh` | DeepEP test matrix. |
 | `scripts/enumerate_test_low_latency*.sh` | `scripts/enumerate_test_low_latency*.sh` | DeepEP test matrices. |
 | `scripts/generalization_test_fused_deep_moe.sh` | `scripts/generalization_test_fused_deep_moe.sh` | DeepEP `fused_deep_moe` generalization test. |
@@ -56,7 +56,7 @@ The resulting standalone repository tracks 409 files.
 | `.github/workflows/push_build_cache.yml` | `.github/workflows/push_build_cache.yml` | DeepEP build-cache warmer; cache key aligned with the PR workflow. |
 | `.github/workflows/lint.yml` | `.github/workflows/lint.yml` | Repo-wide pre-commit lint; the SGLang-kernel-only unit-test step was removed and a Python syntax check added. |
 | `.github/workflows/scripts/wheel/` | `.github/workflows/scripts/wheel/` | Wheel-variant tooling used by the release workflow. |
-| `csrc/.clang-format` | `.clang-format` | C++ formatting config consumed by the pre-commit clang-format hook; moved to the repo root so it also covers `ops/` and `ops2/`. |
+| `csrc/.clang-format` | `.clang-format` | C++ formatting config consumed by the pre-commit clang-format hook; moved to the repo root so it also covers `csrc/ops/` and `csrc/ops2/`. |
 | `LICENSE` | `LICENSE` | Repository license (MIT, sgl-project). |
 | `.pre-commit-config.yaml` | `.pre-commit-config.yaml` | Formatting/lint hooks. |
 | `build.sh` (DeepEP parts) | `build.sh` | Rewritten as a standalone, DeepEP-only build driver. |
@@ -66,11 +66,11 @@ The resulting standalone repository tracks 409 files.
 
 | Upstream path | Reason |
 |---|---|
-| All other `csrc/<kernel>/` directories (attentions, alloc_extend, lora, ...) | SGLang kernel library (`sgl_kernel_npu`), unrelated to DeepEP. The upstream `csrc/CMakeLists.txt` is not copied as-is; a DeepEP-only `csrc/CMakeLists.txt` is provided instead. |
+| All other `csrc/<kernel>/` directories (attentions, alloc_extend, lora, ...) | SGLang kernel library (`sgl_kernel_npu`), unrelated to DeepEP. The upstream `csrc/CMakeLists.txt` is not copied as-is; a DeepEP-only `csrc/runtime/CMakeLists.txt` is provided instead. |
 | `csrc/deepep_cmake_build.sh`, `csrc/deepep/build.sh` | Module-dispatch wrappers for the monorepo (`all`/`deepep` selection, dead pybind/UT branches). The standalone `build.sh` invokes the required steps directly. |
 | `csrc/deepep/README.md` | Empty (0-byte) upstream file; no content to migrate. |
-| `cmake/config_ascend.cmake` | Only needed to build AscendC kernels through the monorepo's top-level CMake project. The operator projects in `ops/` and `ops2/` use CANN's OPP CMake directly. |
-| `third_party/catlass`, `third_party/pto-isa` | Git submodules used by SGLang kernels. DeepEP's `ops/build.sh` fetches the Catlass version it needs (A3/A5) at build time. |
+| `cmake/config_ascend.cmake` | Only needed to build AscendC kernels through the monorepo's top-level CMake project. The operator projects in `csrc/ops/` and `csrc/ops2/` use CANN's OPP CMake directly. |
+| `third_party/catlass`, `third_party/pto-isa` | Git submodules used by SGLang kernels. DeepEP's `csrc/ops/build.sh` fetches the Catlass version it needs (A3/A5) at build time. |
 | `include/`, `config.ini`, `contrib/torch_memory_saver/` | SGLang-kernel / memory-saver components. |
 | `python/sgl_kernel_npu/`, `python/attentions/` | SGLang kernel and attention Python packages. |
 | `tests/csrc/`, `tests/python/sgl_kernel_npu/` | SGLang kernel tests. `test_build_targets.py` exercises the monorepo `build.sh` targets (including `deepep`), not DeepEP runtime code. |
@@ -86,29 +86,31 @@ The resulting standalone repository tracks 409 files.
 
 Only build/packaging glue was changed; DeepEP source code is otherwise kept as-is.
 
-1. **Host extension**: `csrc/CMakeLists.txt` now adds `${PROJECT_SOURCE_DIR}` to its
-   include path because host profiling headers include
-   `ops/profiling/common/profile_protocol_common_core.h`, which used to resolve
-   through the `csrc/deepep/` directory layout.
-2. **Root CMake project**: replaces the monorepo top-level project with a
-   DeepEP-only project that builds `deep_ep_cpp` and installs it to `output/lib`.
+1. **Host extension**: `csrc/runtime/CMakeLists.txt` adds `${DEEPEP_REPO_ROOT}/csrc`
+   to its include path because host profiling headers include
+   `"ops/profiling/common/profile_protocol_common_core.h"`, which now resolves
+   under `csrc/ops/`.
+2. **Host CMake project**: `csrc/runtime/CMakeLists.txt` is now the top-level
+   host project; the former root `CMakeLists.txt` configuration was merged into
+   it. It builds `deep_ep_cpp` and installs it to `output/lib`.
 3. **`build.sh`**: standalone driver. Default target is `deepep` (auto-detects
    A2/A3/A5); `-a deepep2` remains as the A2 alias. It performs:
-   `compile_ascend_proj.sh` → host CMake build/install → `ops/` or `ops2/`
-   package build/install → wheel build.
-4. **`scripts/compile_ascend_proj.sh`**: repo-root-relative replacement for
+   `prepare_opp_scaffold.sh` → host CMake build/install (`csrc/runtime`) →
+   `csrc/ops/` or `csrc/ops2/` package build/install → wheel build.
+4. **`scripts/prepare_opp_scaffold.sh`**: repo-root-relative replacement for
    `csrc/deepep/compile_ascend_proj.sh`. It generates the OPP scaffolding with
    `msopgen` into `build/opp_gen/` and copies `CMakePresets.json` (and `cmake/`
-   when the CANN release emits it) into `ops/` or `ops2/`.
+   when the CANN release emits it) into `csrc/ops/` or `csrc/ops2/`.
+   The msopgen seed template moved to `scripts/templates/opp_scaffold.json`.
 5. **Tests**: moved from `tests/python/deepep/` to `tests/`; runners and k8s
    templates use the new paths. Tests themselves are unchanged.
 6. **CI**: workflow paths, change-detection groups, cache keys and runner
    namespace names were updated for the standalone layout.
-7. **Build hygiene**: `cmake/config_git_last_commit.cmake` now runs `git` in
-   `${PROJECT_SOURCE_DIR}`; `build.sh` removes stale `deep_ep_cpp*.so` files
+7. **Build hygiene**: `csrc/runtime/cmake/config_git_last_commit.cmake` now runs `git` in
+   `DEEPEP_REPO_ROOT`; `build.sh` removes stale `deep_ep_cpp*.so` files
    before packaging; the pre-commit `ruff` hook was dropped because it only
    targeted the non-migrated `benchmark/`, `docs/` and `examples/` trees.
-8. **CMake flags**: the root project keeps the release flags needed by the
+8. **CMake flags**: the host project keeps the release flags needed by the
    extension (`-O3`, visibility, stack protector, `-fPIC`). The monorepo-wide
    warning/linker hardening flags from the old top-level project were not
    carried over; they are not required by `deep_ep_cpp`.
@@ -146,16 +148,18 @@ no NPU device present (`npu-smi` unavailable), so device execution was not run.
 | `bash build.sh -a deepep Ascend950` (A5 end-to-end) | Passed; wheel contains `ascend950` operator kernels. |
 | `import deep_ep` from the installed A3 wheel | Passed; `Buffer`, `Config`, `EventOverlap`, strategies load. |
 | `import deep_ep_cpp` smoke test | Passed; `get_low_latency_rdma_size_hint` callable. |
-| Source parity vs upstream | 383 mapped DeepEP files present; 378 byte-identical, 5 differ only in path/build glue (`csrc/CMakeLists.txt`, `python/deep_ep/README.md`, `python/deep_ep/doc/A2_DEEPEP.md`, `tests/k8s_multi.yaml.jinja2`, `tests/run_ascend_testcase.sh`); 0 missing. |
+| Source parity vs upstream | 383 mapped DeepEP files present; 378 byte-identical, 5 differ only in path/build glue (`csrc/runtime/CMakeLists.txt`, `python/deep_ep/README.md`, `python/deep_ep/doc/A2_DEEPEP.md`, `tests/k8s_multi.yaml.jinja2`, `tests/run_ascend_testcase.sh`); 0 missing. |
 | Test migration | All 25 files from `tests/python/deepep/` present under `tests/`. |
 | Workflow YAML syntax | All seven migrated workflows parse successfully. |
 
 Notes:
 
-- `ops2/CMakePresets.json` is a tracked default preset. `scripts/compile_ascend_proj.sh`
+- After the `csrc` refactor, host-side files live under `csrc/runtime/`; the
+  parity counts above refer to file content and remain valid, only paths moved.
+- `csrc/ops2/CMakePresets.json` is a tracked default preset. `scripts/prepare_opp_scaffold.sh`
   regenerates it for the target SoC during every build, so a local build may show
   it as modified (this matches the previous monorepo behaviour).
-- `ops2/op_kernel/moe_distribute_comm_ctx.h` is copied from CANN at configure time
+- `csrc/ops2/op_kernel/moe_distribute_comm_ctx.h` is copied from CANN at configure time
   and is git-ignored.
 - Device tests (`tests/test_*.py`) require an actual A2/A3/A5 NPU and were not run
   here; their code is unchanged apart from path references in the wrappers.

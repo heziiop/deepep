@@ -1,5 +1,65 @@
-# this is the cmakelist file for deepep build
-# deepep will be built as separated wheel package
+# Host-side C++/pybind11 extension (deep_ep_cpp).
+# The AscendC operator packages live in ../ops (A3/A5) and ../ops2 (A2) and are
+# separate CANN OPP projects built by build.sh, not by this CMake project.
+
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
+project(deep_ep LANGUAGES CXX)
+
+option(DEEPEP_IS_A5_BUILD "build deep_ep for Ascend 950 (A5)" OFF)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Repository root: csrc/runtime/../..
+set(DEEPEP_REPO_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE RELEASE)
+endif()
+
+if(${CMAKE_BUILD_TYPE} MATCHES "RELEASE")
+    add_compile_options(-O3)
+    add_compile_options(-fvisibility=hidden -fvisibility-inlines-hidden)
+    add_compile_options(-fstack-protector-strong)
+    add_compile_options(-fPIC)
+    message(STATUS "build type set to RELEASE")
+else()
+    add_compile_options(-g -rdynamic)
+endif()
+
+if(DEFINED ENV{DEBUG_MODE})
+    if("$ENV{DEBUG_MODE}" STREQUAL "ON")
+        add_compile_definitions(DEBUG_MODE)
+        message(STATUS "Debug logging enabled from environment")
+    endif()
+endif()
+
+# ASCEND_HOME_PATH can come from build.sh (-DASCEND_HOME_PATH=...) or from the
+# environment when CMake is invoked directly.
+if(NOT DEFINED ASCEND_HOME_PATH AND DEFINED ENV{ASCEND_HOME_PATH})
+    set(ASCEND_HOME_PATH "$ENV{ASCEND_HOME_PATH}" CACHE PATH "ASCEND CANN package installation directory" FORCE)
+endif()
+if(NOT DEFINED ASCEND_HOME_PATH OR NOT EXISTS "${ASCEND_HOME_PATH}")
+    message(FATAL_ERROR
+        "ASCEND_HOME_PATH is not set or does not exist: '${ASCEND_HOME_PATH}'.\n"
+        "Source the CANN environment first (source /usr/local/Ascend/ascend-toolkit/set_env.sh) "
+        "or pass -DASCEND_HOME_PATH=<cann-root>.")
+endif()
+
+set(PROJECT_BUILD_PATH ${PROJECT_BINARY_DIR})
+set(PROJECT_OUTPUT_PATH ${DEEPEP_REPO_ROOT}/output)
+
+include(cmake/config_git_last_commit.cmake)
+include(cmake/config_envs.cmake)
+
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    message(STATUS "Found ccache: ${CCACHE_PROGRAM}")
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+    set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+else()
+    message(STATUS "ccache not found, proceeding with normal compilation")
+endif()
 
 if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
     set(DEEPEP_ARCH "x86_64")
@@ -9,7 +69,6 @@ else()
     message(FATAL_ERROR "Unsupported host processor: ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
-set(PROJECT_BUILD_PATH ${PROJECT_BINARY_DIR})
 set(TARGET_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 set(ASCEND_HOME_PATH ${ASCEND_HOME_PATH})
 
@@ -43,9 +102,9 @@ endif()
 target_include_directories( deep_ep_cpp PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     # Host profiling code includes shared protocol headers as
-    # "ops/profiling/common/...", so the repository root must be on the
-    # include path (ops/ is a sibling of csrc/ in this standalone layout).
-    ${PROJECT_SOURCE_DIR}
+    # "ops/profiling/common/...", so csrc/ must be on the include path
+    # (ops/ is now csrc/ops/ in this layout).
+    ${DEEPEP_REPO_ROOT}/csrc
 
     ${TORCH_DIR}/include
     ${TORCH_DIR}/include/torch/csrc/api/include

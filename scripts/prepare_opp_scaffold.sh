@@ -1,7 +1,7 @@
 #!/bin/bash
 # Generate the OPP project scaffolding used by the standalone operator projects.
 #
-# The AscendC operator sources in ops/ (A3/A5) and ops2/ (A2) are configured as
+# The AscendC operator sources in csrc/ops/ (A3/A5) and csrc/ops2/ (A2) are configured as
 # a regular OPP CMake project. `msopgen` is used to produce the SoC-specific
 # CMakePresets.json (and, on CANN releases that still ship it, the cmake helper
 # directory) that the project expects. The generated sample operator sources are
@@ -35,18 +35,19 @@ if ! command -v msopgen >/dev/null 2>&1; then
 fi
 
 if [[ "${VARIANT}" == "deepep2" ]]; then
-    OPS_DIR="${PROJECT_ROOT}/ops2"
+    OPS_DIR="${PROJECT_ROOT}/csrc/ops2"
     OPS_NAME="ops2"
 else
-    OPS_DIR="${PROJECT_ROOT}/ops"
+    OPS_DIR="${PROJECT_ROOT}/csrc/ops"
     OPS_NAME="ops"
 fi
 
-# AddCustom.json is only a template used to make msopgen emit a project
-# skeleton; both operator projects share it.
-ADD_CUSTOM_JSON="${PROJECT_ROOT}/ops/AddCustom.json"
-if [[ ! -f "${ADD_CUSTOM_JSON}" ]]; then
-    echo "Error: missing msopgen template: ${ADD_CUSTOM_JSON}" 1>&2
+# opp_scaffold.json is only a template used to make msopgen emit a project
+# skeleton; both operator projects share it. Keep "op": "AddCustom" unchanged:
+# the generated sample files are deleted with the add_custom* glob below.
+SCAFFOLD_TEMPLATE="${PROJECT_ROOT}/scripts/templates/opp_scaffold.json"
+if [[ ! -f "${SCAFFOLD_TEMPLATE}" ]]; then
+    echo "Error: missing msopgen template: ${SCAFFOLD_TEMPLATE}" 1>&2
     exit 1
 fi
 
@@ -55,9 +56,9 @@ GEN_DIR="${GEN_ROOT}/${OPS_NAME}_${SOC_VERSION}"
 rm -rf "${GEN_DIR}"
 mkdir -p "${GEN_ROOT}"
 
-echo "msopgen gen -i ${ADD_CUSTOM_JSON} -c ai_core-${SOC_VERSION} -f pytorch -lan cpp -out ${GEN_DIR}"
+echo "msopgen gen -i ${SCAFFOLD_TEMPLATE} -c ai_core-${SOC_VERSION} -f pytorch -lan cpp -out ${GEN_DIR}"
 export OPS_PROJECT_NAME=aclnnInner
-msopgen gen -i "${ADD_CUSTOM_JSON}" \
+msopgen gen -i "${SCAFFOLD_TEMPLATE}" \
     -c "ai_core-${SOC_VERSION}" \
     -f pytorch \
     -lan cpp \
