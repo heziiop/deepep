@@ -40,7 +40,6 @@ packages, its Python bindings, and its tests.
 | `tests/` | DeepEP Python test suite and multi-node test helpers. |
 | `scripts/` | Build scaffolding, CI preparation, and test matrix scripts. |
 | `.github/` | CI workflows: PR/daily tests, lint, build cache, release. |
-| `docs/` | Project documentation. |
 
 ### Software and Hardware
 
@@ -379,7 +378,6 @@ DeepEP-Ascend 采用**策略式架构**，通过环境变量灵活选择通信�
 | `tests/` | DeepEP Python 测试用例及多机测试辅助脚本。 |
 | `scripts/` | 构建脚手架、CI 准备与测试矩阵脚本。 |
 | `.github/` | CI workflow：PR/每日测试、lint、构建缓存、发布。 |
-| `docs/` | 项目文档。 |
 
 ### 软硬件配套说明
 
