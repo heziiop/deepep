@@ -8,7 +8,7 @@ from typing import Callable, List, Optional, Tuple, Union
 import torch
 import torch.distributed as dist
 import torch_npu
-from deep_ep_cpp import EventHandle
+from ..deep_ep_cpp import EventHandle
 
 from ..ep_strategy import (
     VALID_QUANT_MODES,

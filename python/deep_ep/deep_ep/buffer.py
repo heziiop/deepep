@@ -1,11 +1,11 @@
 import os
 from typing import Callable, Dict, List, Optional, Tuple, Union
 
-import deep_ep_cpp
+from . import deep_ep_cpp
 import torch
 import torch.distributed as dist
 import torch_npu
-from deep_ep_cpp import Config, EventHandle
+from .deep_ep_cpp import Config, EventHandle
 
 from .ep_strategy import (
     FusedEPCommStrategy,

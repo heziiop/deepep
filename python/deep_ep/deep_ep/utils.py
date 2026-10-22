@@ -6,7 +6,7 @@ from typing import Optional, Tuple
 
 import torch
 import torch_npu
-from deep_ep_cpp import Config, EventHandle
+from .deep_ep_cpp import Config, EventHandle
 
 from .device_info import DEVICE_VERSION_TABLE, QUANT_MODE_TABLE, get_device_version
 

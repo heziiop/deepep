@@ -24,7 +24,7 @@ if os.path.exists(_cust_lib):
     except OSError:
         pass
 
-from deep_ep_cpp import Config
+from .deep_ep_cpp import Config
 
 # Import strategies to register them
 from . import strategies

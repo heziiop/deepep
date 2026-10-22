@@ -50,5 +50,3 @@ if [ -z "$DEEP_EP_LOCATION" ]; then
     echo "Error: deep-ep package not found after pip install" 1>&2
     exit 1
 fi
-cd "$DEEP_EP_LOCATION"
-ln -sf deep_ep/deep_ep_cpp*.so || true

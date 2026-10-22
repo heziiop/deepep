@@ -126,8 +126,6 @@ if [ "$build_success" = false ]; then
 fi
 
 pip install ./output/deep_ep*.whl --no-cache-dir
-cd "$(pip show deep-ep | awk '/^Location:/ {print $2}')"
-ln -sf deep_ep/deep_ep_cpp*.so ./ 2>/dev/null || true
 echo "============================================= Finished building deep-ep ============================================="
 
 pip show deep-ep

@@ -37,14 +37,9 @@ After building, a `deep_ep` whl package will be generated in the `output` direct
 ```bash
 pip install output/deep_ep*.whl
 
-# Link to deep_ep_cpp*.so
-cd "$(pip show deep-ep | grep -E '^Location:' | awk '{print $2}')" && ln -sf deep_ep/deep_ep_cpp*.so && cd -
-
 # (Optional) Confirm successful import
 python -c "import deep_ep; print(deep_ep.__path__)"
 ```
-> [!TIP]
-> If you skip the symlink step, you will get a "deep_ep_cpp.so not found" error at runtime.
 
 ### Usage
 
@@ -204,14 +199,9 @@ bash build.sh -a deepep2
 ```bash
 pip install output/deep_ep*.whl
 
-# 设置deep_ep_cpp*.so的软链接
-cd "$(pip show deep-ep | grep -E '^Location:' | awk '{print $2}')" && ln -sf deep_ep/deep_ep_cpp*.so && cd -
-
 # （可选）确认是否可以成功导入
 python -c "import deep_ep; print(deep_ep.__path__)"
 ```
-> [!TIP]
-> 若未执行软链接，运行时将报错"找不到 deep_ep_cpp.so"。
 
 ### 使用
 

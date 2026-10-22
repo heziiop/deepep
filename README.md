@@ -91,9 +91,6 @@ The following explicit commands remain available when automatic detection is not
 ```bash
 pip install output/deep_ep*.whl
 
-# Link to the deep_ep_cpp.*.so file
-cd "$(pip show deep-ep | grep -E '^Location:' | awk '{print $2}')" && ln -s deep_ep/deep_ep_cpp*.so && cd -
-
 # (Optional) Confirm whether the import can be successful
 python -c "import deep_ep; print(deep_ep.__path__)"
 ```
@@ -340,14 +337,9 @@ bash tests/run_test_internode.sh
 pip show deep-ep
 ```
 
-2. If after installing the `.whl`, you encounter an issue where `deep_ep_cpp` is not found, you need to create a symbolic link of the `deep_ep_cpp*.so` files from the `site-packages/deep_ep` directory to the `site-packages` directory. Execute the following command in the `site-packages` directory:
-```
-ln -s deep_ep/deep_ep_cpp*.so
-```
+2. If you get a `ValueError` about unsupported mode combination, check that `DEEP_USE_MODE` is set to a valid value (`default`, `ops`, `alltoall`). See the [Strategy Selection](#strategy-selection) table for valid combinations.
 
-3. If you get a `ValueError` about unsupported mode combination, check that `DEEP_USE_MODE` is set to a valid value (`default`, `ops`, `alltoall`). See the [Strategy Selection](#strategy-selection) table for valid combinations.
-
-4. On A2, always set `HCCL_BUFFSIZE` before running DeepEP. Missing this will cause dispatch/combine operators to fail.
+3. On A2, always set `HCCL_BUFFSIZE` before running DeepEP. Missing this will cause dispatch/combine operators to fail.
 
 ---
 
@@ -429,9 +421,6 @@ bash build.sh -a deepep
 1、执行 pip 安装命令，将 `.whl` 安装到你的 Python 环境下
 ```bash
 pip install output/deep_ep*.whl
-
-# 设置 deep_ep_cpp*.so 的软链接
-cd "$(pip show deep-ep | grep -E '^Location:' | awk '{print $2}')" && ln -s deep_ep/deep_ep_cpp*.so && cd -
 
 # （可选）确认是否可以成功导入
 python -c "import deep_ep; print(deep_ep.__path__)"
@@ -660,12 +649,6 @@ bash tests/run_test_internode.sh
 pip show deep-ep
 ```
 
-2、如果安装 `.whl` 后，出现找不到 `deep_ep_cpp`，则需要将 `site-packages/deep_ep` 目录下的 `deep_ep_cpp*.so` 文件软链接到 `site-packages` 目录下；
-在 `site-packages` 目录下执行：
-```
-ln -s deep_ep/deep_ep_cpp*.so
-```
+2、如果遇到 `ValueError` 提示不支持的模式组合，请检查 `DEEP_USE_MODE` 是否为有效值（`default`、`ops`、`alltoall`）。参见[策略选择](#策略选择)表格。
 
-3、如果遇到 `ValueError` 提示不支持的模式组合，请检查 `DEEP_USE_MODE` 是否为有效值（`default`、`ops`、`alltoall`）。参见[策略选择](#策略选择)表格。
-
-4、在 A2 上运行 DeepEP 前，必须设置 `HCCL_BUFFSIZE`，否则 dispatch/combine 算子会报错。
+3、在 A2 上运行 DeepEP 前，必须设置 `HCCL_BUFFSIZE`，否则 dispatch/combine 算子会报错。
