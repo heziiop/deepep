@@ -40,6 +40,7 @@ TARGET:
     deepep         (default) Build deep_ep and select csrc/ops/ (A3/A5) or csrc/ops2/ (A2)
                    from the detected SoC.
     deepep2        Build deep_ep with csrc/ops2/ for A2 (compatible alias).
+    all            Compatibility alias for deepep; this repository has no other modules.
 
 SOC_VERSION:
     Ascend910B1         A2 chip. Valid for deepep/deepep2.
@@ -109,7 +110,7 @@ function configure_build_target()
             DEEPEP_VARIANT="deepep2"
             ;;
         * )
-            die "Invalid target '$BUILD_TARGET'. Allowed values: deepep|deepep2"
+            die "Invalid target '$BUILD_TARGET'. Allowed values: deepep|deepep2|all"
             ;;
     esac
 }
