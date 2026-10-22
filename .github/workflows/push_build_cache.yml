@@ -94,7 +94,7 @@ jobs:
       - name: Build artifacts
         if: steps.cache-build.outputs.cache-hit != 'true'
         run: |
-          echo "🚀 Building ${matrix.arch} artifacts, CANN ${{ matrix.cann_version }}"
+          echo "🚀 Building ${{ matrix.arch }} artifacts, CANN ${{ matrix.cann_version }}"
           if [ "${{ matrix.arch }}" = "a2" ]; then
             env -i PATH=${PATH} bash --login -c "
               export LD_LIBRARY_PATH=${ASCEND_HOME_PATH}/runtime/lib64/stub:${LD_LIBRARY_PATH} && \

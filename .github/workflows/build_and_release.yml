@@ -11,6 +11,9 @@ on:
     paths:
       - '.github/workflows/build_and_release.yml'
       - 'build.sh'
+      - 'csrc/**'
+      - 'python/**'
+      - 'scripts/**'
 
   workflow_dispatch:
 
