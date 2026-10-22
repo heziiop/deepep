@@ -7,7 +7,6 @@ on:
       - "build.sh"
       - "csrc/**"
       - "python/**"
-      - "tests/**"
       - "scripts/**"
   workflow_dispatch:
 
@@ -65,7 +64,7 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./tests ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           echo "Resolved build hash: $BUILD_HASH"

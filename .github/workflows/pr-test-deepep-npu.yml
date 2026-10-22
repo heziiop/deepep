@@ -56,7 +56,6 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' || (
-        github.event_name == 'pull_request' &&
         github.event.pull_request.draft == false &&
         (needs.get-changed-files.outputs.ops_changed == 'true' || needs.get-changed-files.outputs.common_changed == 'true')
       )
@@ -86,7 +85,7 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./tests ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           CANN_RAW=$(cat /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null || echo "unknown")
@@ -285,7 +284,6 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' || (
-        github.event_name == 'pull_request' &&
         github.event.pull_request.draft == false &&
         (needs.get-changed-files.outputs.ops_changed == 'true' || needs.get-changed-files.outputs.common_changed == 'true')
       )
@@ -315,7 +313,7 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./tests ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           CANN_RAW=$(cat /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null || echo "unknown")
@@ -483,7 +481,6 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' || (
-        github.event_name == 'pull_request' &&
         github.event.pull_request.draft == false &&
         needs.get-changed-files.outputs.ops2_changed == 'true'
       )
@@ -513,7 +510,7 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./tests ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           CANN_RAW=$(cat /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null || echo "unknown")
@@ -751,7 +748,6 @@ jobs:
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'workflow_call' || (
-        github.event_name == 'pull_request' &&
         github.event.pull_request.draft == false &&
         (needs.get-changed-files.outputs.ops_changed == 'true' || needs.get-changed-files.outputs.common_changed == 'true')
       )
@@ -781,7 +777,7 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./tests ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           CANN_RAW=$(cat /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null || echo "unknown")

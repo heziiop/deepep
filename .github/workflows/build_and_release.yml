@@ -11,9 +11,6 @@ on:
     paths:
       - '.github/workflows/build_and_release.yml'
       - 'build.sh'
-      - 'csrc/**'
-      - 'python/**'
-      - 'scripts/**'
 
   workflow_dispatch:
 
@@ -83,6 +80,7 @@ jobs:
           "
 
       - name: Upload build artifacts
+        if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: deep-ep-${{ matrix.npu_hardware }}-${{ matrix.arch }}-cann${{ matrix.cann_version }}-torch${{ matrix.torch_version }}-wheel

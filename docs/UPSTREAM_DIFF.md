@@ -94,11 +94,11 @@
 
 | 本仓库文件 | 上游文件 | ±行数 | 改动 |
 |---|---|---:|---|
-| `.github/workflows/build_and_release.yml` | 同路径 | +22/−252 | 从 SGLang kernel + DeepEP 混合流水线裁剪为 DeepEP-only，矩阵改为 A2/A3/A5 |
-| `.github/workflows/pr-test-deepep-npu.yml` | 同路径 | +173/−177 | 触发路径、change-detection globs、cache key、测试路径 |
+| `.github/workflows/build_and_release.yml` | 同路径 | +20/−252 | 从 SGLang kernel + DeepEP 混合流水线裁剪为 DeepEP-only，矩阵改为 A2/A3/A5 |
+| `.github/workflows/pr-test-deepep-npu.yml` | 同路径 | +169/−177 | 触发路径、change-detection globs、cache key、测试路径 |
 | `.github/workflows/daily-build-test.yml` | 同路径 | +3/−4 | workflow/报告命名 |
-| `.github/workflows/push_build_cache.yml` | 同路径 | +11/−21 | 路径列表、build hash、cache key |
-| `.github/workflows/lint.yml` | 同路径 | +5/−10 | 去掉 SGLang kernel 单测步骤，增加 `compileall python/deep_ep tests` |
+| `.github/workflows/push_build_cache.yml` | 同路径 | +10/−21 | 路径列表、build hash、cache key |
+| `.github/workflows/lint.yml` | 同路径 | +6/−10 | 去掉 SGLang kernel 单测步骤，增加 `compileall python/deep_ep tests` |
 | `.pre-commit-config.yaml` | 同路径 | +0/−7 | 去掉只针对未迁移目录的 `ruff` hook |
 
 ### 文档

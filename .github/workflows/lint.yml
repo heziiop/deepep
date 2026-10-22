@@ -22,9 +22,10 @@ jobs:
       - name: Linting
         run: pre-commit run --all-files --show-diff-on-failure
 
-      # The migrated Python entry points are pure-Python modules; import-time
-      # checks need neither NPU nor torch_npu. This catches syntax/import-path
-      # regressions in the standalone layout before the NPU test jobs run.
+      # Byte-compile the standalone Python trees. This only checks syntax; it
+      # does not resolve imports (deep_ep imports torch_npu, which is not
+      # installed on this runner). Import-path regressions are still caught by
+      # the NPU test jobs.
       - name: Python syntax check
         run: |
           python -m compileall -q python/deep_ep tests
