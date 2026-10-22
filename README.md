@@ -80,9 +80,6 @@ The following explicit commands remain available when automatic detection is not
 - **A3**: `bash build.sh -a deepep Ascend910_9382`
 - **A2**: `bash build.sh -a deepep2`
 
-> **Note**: This is a standalone repository; `bash build.sh` never builds any
-> SGLang kernels or other unrelated modules.
->
 > **Dependencies**: building the AscendC operator package requires `msopgen`
 > from CANN. For A3/A5, `csrc/ops/build.sh` also fetches the required Catlass revision
 > from `gitcode.com` on the first build.
@@ -423,9 +420,6 @@ bash build.sh -a deepep
 - **A2**：`bash build.sh -a deepep Ascend910B1`
 - **A2 兼容命令**：`bash build.sh -a deepep2`
 
-> **说明**：本仓库是独立仓库，`bash build.sh` 不会构建任何 SGLang kernel
-> 或其他无关模块。
->
 > **依赖**：构建 AscendC 算子包需要 CANN 提供的 `msopgen`。A3/A5 首次构建时，
 > `csrc/ops/build.sh` 还会从 `gitcode.com` 拉取所需的 Catlass 版本。
 >
