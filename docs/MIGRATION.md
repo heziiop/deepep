@@ -26,7 +26,9 @@ The audit covered all 1,178 tracked files in the upstream repository:
 5. Compared every migrated file against upstream (byte-for-byte except the
    intentional path/build-glue changes listed below).
 
-The resulting standalone repository tracks 409 files.
+The resulting standalone repository tracks 409 files. The per-file result —
+which directories are copied verbatim, which files changed, and which files are
+new — is recorded in [UPSTREAM_DIFF.md](UPSTREAM_DIFF.md).
 
 ## Ownership audit
 
@@ -148,14 +150,12 @@ no NPU device present (`npu-smi` unavailable), so device execution was not run.
 | `bash build.sh -a deepep Ascend950` (A5 end-to-end) | Passed; wheel contains `ascend950` operator kernels. |
 | `import deep_ep` from the installed A3 wheel | Passed; `Buffer`, `Config`, `EventOverlap`, strategies load. |
 | `import deep_ep_cpp` smoke test | Passed; `get_low_latency_rdma_size_hint` callable. |
-| Source parity vs upstream | 383 mapped DeepEP files present; 378 byte-identical, 5 differ only in path/build glue (`csrc/runtime/CMakeLists.txt`, `python/deep_ep/README.md`, `python/deep_ep/doc/A2_DEEPEP.md`, `tests/k8s_multi.yaml.jinja2`, `tests/run_ascend_testcase.sh`); 0 missing. |
+| Source parity vs upstream | 404 mapped DeepEP files present; 385 byte-identical, 19 differ only in path/build glue and CI adaptation; 0 missing (2 upstream files intentionally dropped). Details in [UPSTREAM_DIFF.md](UPSTREAM_DIFF.md). |
 | Test migration | All 25 files from `tests/python/deepep/` present under `tests/`. |
 | Workflow YAML syntax | All seven migrated workflows parse successfully. |
 
 Notes:
 
-- After the `csrc` refactor, host-side files live under `csrc/runtime/`; the
-  parity counts above refer to file content and remain valid, only paths moved.
 - `csrc/ops2/CMakePresets.json` is a tracked default preset. `scripts/prepare_opp_scaffold.sh`
   regenerates it for the target SoC during every build, so a local build may show
   it as modified (this matches the previous monorepo behaviour).

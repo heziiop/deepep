@@ -41,10 +41,11 @@ contains only the DeepEP component, its AscendC operator packages, and its tests
 | `tests/` | DeepEP Python test suite and multi-node test helpers. |
 | `scripts/` | Build scaffolding, CI preparation, and test matrix scripts. |
 | `.github/` | CI workflows: PR/daily tests, lint, build cache, release. |
-| `docs/` | Extraction audit and migration notes. |
+| `docs/` | Extraction audit, migration notes, and the upstream parity report. |
 
 See [docs/MIGRATION.md](docs/MIGRATION.md) for the ownership audit and the
-upstream removal checklist.
+upstream removal checklist, and [docs/UPSTREAM_DIFF.md](docs/UPSTREAM_DIFF.md)
+for the file-by-file parity report against `sgl-kernel-npu`.
 
 ### Software and Hardware
 
@@ -386,6 +387,11 @@ DeepEP-Ascend 采用**策略式架构**，通过环境变量灵活选择通信�
 | `python/deep_ep/` | Python 包与 wheel 定义（`setup.py`）。 |
 | `tests/` | DeepEP Python 测试用例及多机测试辅助脚本。 |
 | `scripts/` | 构建脚手架、CI 准备与测试矩阵脚本。 |
+| `.github/` | CI workflow：PR/每日测试、lint、构建缓存、发布。 |
+| `docs/` | 拆分审计、迁移说明与上游一致性报告。 |
+
+迁移审计与上游对比见 [docs/MIGRATION.md](docs/MIGRATION.md) 与
+[docs/UPSTREAM_DIFF.md](docs/UPSTREAM_DIFF.md)。
 
 ### 软硬件配套说明
 
