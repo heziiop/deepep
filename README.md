@@ -25,9 +25,8 @@ English | [中文](#中文)
 
 DeepEP-Ascend uses a **strategy-based architecture** that allows flexible selection of communication implementations via environment variables, supporting various hardware topologies (A2, A3, A5) and communication backends (HCCS, RDMA, AlltoAll).
 
-This repository is the standalone home of DeepEP-Ascend. It was extracted from
-[sgl-project/sgl-kernel-npu](https://github.com/sgl-project/sgl-kernel-npu) and
-contains only the DeepEP component, its AscendC operator packages, and its tests.
+This repository contains the DeepEP-Ascend component, its AscendC operator
+packages, its Python bindings, and its tests.
 
 ### Repository Layout
 
@@ -41,11 +40,7 @@ contains only the DeepEP component, its AscendC operator packages, and its tests
 | `tests/` | DeepEP Python test suite and multi-node test helpers. |
 | `scripts/` | Build scaffolding, CI preparation, and test matrix scripts. |
 | `.github/` | CI workflows: PR/daily tests, lint, build cache, release. |
-| `docs/` | Extraction audit, migration notes, and the upstream parity report. |
-
-See [docs/MIGRATION.md](docs/MIGRATION.md) for the ownership audit and the
-upstream removal checklist, and [docs/UPSTREAM_DIFF.md](docs/UPSTREAM_DIFF.md)
-for the file-by-file parity report against `sgl-kernel-npu`.
+| `docs/` | Project documentation. |
 
 ### Software and Hardware
 
@@ -372,9 +367,7 @@ ln -s deep_ep/deep_ep_cpp*.so
 
 DeepEP-Ascend 采用**策略式架构**，通过环境变量灵活选择通信实现方式，支持多种硬件拓扑（A2、A3、A5）和通信后端（HCCS、RDMA、AlltoAll）。
 
-本仓库是 DeepEP-Ascend 的独立仓库，从
-[sgl-project/sgl-kernel-npu](https://github.com/sgl-project/sgl-kernel-npu)
-中拆分而来，仅包含 DeepEP 组件、AscendC 算子工程及其测试。
+本仓库包含 DeepEP-Ascend 组件、AscendC 算子工程、Python 绑定及其测试。
 
 #### 仓库结构
 
@@ -388,10 +381,7 @@ DeepEP-Ascend 采用**策略式架构**，通过环境变量灵活选择通信�
 | `tests/` | DeepEP Python 测试用例及多机测试辅助脚本。 |
 | `scripts/` | 构建脚手架、CI 准备与测试矩阵脚本。 |
 | `.github/` | CI workflow：PR/每日测试、lint、构建缓存、发布。 |
-| `docs/` | 拆分审计、迁移说明与上游一致性报告。 |
-
-迁移审计与上游对比见 [docs/MIGRATION.md](docs/MIGRATION.md) 与
-[docs/UPSTREAM_DIFF.md](docs/UPSTREAM_DIFF.md)。
+| `docs/` | 项目文档。 |
 
 ### 软硬件配套说明
 
