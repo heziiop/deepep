@@ -85,7 +85,9 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./build.sh \
+            ./scripts/prepare_opp_scaffold.sh ./scripts/templates \
+            ./scripts/prepare_deepep_in_container.sh ./scripts/npu_ci_install_dependency.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           CANN_RAW=$(cat /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null || echo "unknown")
@@ -313,7 +315,9 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./build.sh \
+            ./scripts/prepare_opp_scaffold.sh ./scripts/templates \
+            ./scripts/prepare_deepep_in_container.sh ./scripts/npu_ci_install_dependency.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           CANN_RAW=$(cat /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null || echo "unknown")
@@ -510,7 +514,9 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./build.sh \
+            ./scripts/prepare_opp_scaffold.sh ./scripts/templates \
+            ./scripts/prepare_deepep_in_container.sh ./scripts/npu_ci_install_dependency.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           CANN_RAW=$(cat /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null || echo "unknown")
@@ -777,7 +783,9 @@ jobs:
       - name: Get build hash
         id: get_build_hash
         run: |
-          BUILD_HASH=$(find ./csrc ./python ./scripts ./build.sh \
+          BUILD_HASH=$(find ./csrc ./python ./build.sh \
+            ./scripts/prepare_opp_scaffold.sh ./scripts/templates \
+            ./scripts/prepare_deepep_in_container.sh ./scripts/npu_ci_install_dependency.sh \
             -type f -not -path '*/.*' 2>/dev/null | sort | xargs sha256sum | sha256sum | awk '{print $1}')
           echo "BUILD_HASH=$BUILD_HASH" >> $GITHUB_OUTPUT
           CANN_RAW=$(cat /usr/local/Ascend/ascend-toolkit/latest/version.cfg 2>/dev/null || echo "unknown")

@@ -65,7 +65,8 @@ msopgen gen -i "${SCAFFOLD_TEMPLATE}" \
     -out "${GEN_DIR}"
 
 # Drop the generated sample operator; the real operator sources live in OPS_DIR.
-rm -f "${GEN_DIR}"/op_host/add_custom* "${GEN_DIR}"/op_kernel/add_custom*
+# -r keeps this working if a CANN release ships a directory instead of files.
+rm -rf "${GEN_DIR}"/op_host/add_custom* "${GEN_DIR}"/op_kernel/add_custom*
 
 if [[ -d "${GEN_DIR}/cmake" ]]; then
     rm -rf "${OPS_DIR}/cmake"

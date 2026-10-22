@@ -86,7 +86,7 @@
 
 | 本仓库文件 | 上游文件 | ±行数 | 改动 |
 |---|---|---:|---|
-| `csrc/runtime/CMakeLists.txt` | `csrc/deepep/CMakeLists.txt`（并入上游根 `CMakeLists.txt`） | +66/−3 | 现在是 host 顶层工程；include path 增加 `${DEEPEP_REPO_ROOT}/csrc`；合并 project/install 配置 |
+| `csrc/runtime/CMakeLists.txt` | `csrc/deepep/CMakeLists.txt`（并入上游根 `CMakeLists.txt`） | +71/−3 | 现在是 host 顶层工程；编译选项与上游逐字一致；include path 增加 `${DEEPEP_REPO_ROOT}/csrc`；合并 project/install 配置 |
 | `csrc/runtime/cmake/config_git_last_commit.cmake` | `cmake/config_git_last_commit.cmake` | +12/−1 | `git` 改在 `DEEPEP_REPO_ROOT` 执行；修正失败日志 |
 | `scripts/prepare_opp_scaffold.sh` | `csrc/deepep/compile_ascend_proj.sh` | +72/−83 | 重写：改为仓库根相对、模板移到 `scripts/templates/`、输出到 `build/opp_gen/`，只拷贝 `CMakePresets.json`（CANN 提供时再拷 `cmake/`） |
 

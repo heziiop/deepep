@@ -17,11 +17,16 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RELEASE)
 endif()
 
+# Mirrors the upstream top-level project so a standalone build uses exactly the
+# same compiler flags for every DeepEP source file.
+add_compile_options(-hno-unused-parameter -lno-unused-function -Wunused-value -Wcast-align)
+add_compile_options(-Wcast-qual -Winvalid-pch -Wwrite-strings -Wsign-compare -Wextra)
+
 if(${CMAKE_BUILD_TYPE} MATCHES "RELEASE")
     add_compile_options(-O3)
     add_compile_options(-fvisibility=hidden -fvisibility-inlines-hidden)
     add_compile_options(-fstack-protector-strong)
-    add_compile_options(-fPIC)
+    add_compile_options(-Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now -fPIE -fPIC -ftrapv -s)
     message(STATUS "build type set to RELEASE")
 else()
     add_compile_options(-g -rdynamic)

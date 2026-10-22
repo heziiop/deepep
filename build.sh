@@ -353,8 +353,6 @@ function build_host_extension()
     local cmake_args=(
         "-DCMAKE_INSTALL_PREFIX=$OUTPUT_DIR"
         "-DASCEND_HOME_PATH=$ASCEND_HOME_PATH"
-        "-DASCEND_INCLUDE_DIR=$ASCEND_INCLUDE_DIR"
-        "-DSOC_VERSION=$CMAKE_SOC_VERSION"
         "-DDEEPEP_IS_A5_BUILD=$DEEPEP_IS_A5_BUILD"
     )
 
@@ -367,6 +365,11 @@ function build_host_extension()
 
     rm -rf "$BUILD_DIR"
     mkdir -p "$BUILD_DIR"
+
+    # output/ is the install prefix and survives between builds; drop a module
+    # built for a different Python ABI so it cannot be packaged alongside the
+    # one installed below.
+    rm -f "$OUTPUT_DIR"/lib/deep_ep_cpp*.so
 
     cmake "${cmake_args[@]}" \
         -B "$BUILD_DIR" \
@@ -434,9 +437,6 @@ function main()
 
     setup_ascend_environment
     mkdir -p "$OUTPUT_DIR"
-    # A build for a different SoC produces a wheel with the same version
-    # string; drop stale wheels so output/ always describes this build.
-    rm -f "$OUTPUT_DIR"/deep_ep*.whl
     echo "Output directory: $OUTPUT_DIR"
     echo "CANN path: $ASCEND_HOME_PATH"
 

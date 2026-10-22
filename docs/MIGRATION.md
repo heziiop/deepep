@@ -106,12 +106,14 @@
 6. **CI**：workflow 路径、change-detection 分组、cache key 与 runner
    namespace 按独立仓库布局更新。
 7. **构建卫生**：`csrc/runtime/cmake/config_git_last_commit.cmake` 改在
-   `DEEPEP_REPO_ROOT` 中执行 `git`；`build.sh` 在打包前清理残留的
-   `deep_ep_cpp*.so`；删除 pre-commit 的 `ruff` hook，因为它只针对未迁移的
-   `benchmark/`、`docs/` 与 `examples/` 目录。
-8. **CMake flags**：host 工程保留扩展所需的 release flags（`-O3`、符号可见性、
-   stack protector、`-fPIC`）。原顶层工程中 monorepo 级别的告警/链接加固
-   flags 未沿用；`deep_ep_cpp` 并不需要它们。
+   `DEEPEP_REPO_ROOT` 中执行 `git`；`build.sh` 在 host 构建前清理
+   `output/lib` 中残留的 `deep_ep_cpp*.so`，并在打包前清理源码目录中的同名
+   文件，避免 wheel 里出现多个 Python ABI 的模块；删除 pre-commit 的
+   `ruff` hook，因为它只针对未迁移的 `benchmark/`、`docs/` 与 `examples/` 目录。
+8. **CMake flags**：`csrc/runtime/CMakeLists.txt` 逐字保留上游顶层工程的编译
+   选项（`-O3`、符号可见性、stack protector、`-fPIC`/`-fPIE`、`-ftrapv`、`-s`
+   以及告警 flags），使 host 扩展的编译命令行与上游一致；差异只在 CMake 工程
+   结构（原顶层工程并入 `csrc/runtime`）。
 
 ## 从 `sgl-kernel-npu` 中移除 DeepEP（未在本仓库执行）
 
